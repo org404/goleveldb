@@ -426,7 +426,9 @@ func (s *session) newManifest(rec *sessionRecord, v *version) (err error) {
 				s.manifest.Close()
 			}
 			if s.manifestWriter != nil {
-				s.manifestWriter.Close()
+				if err := s.manifestWriter.Close(); err != nil {
+					s.logf("error closing manifest writer: %v", err)
+				}
 			}
 			if !s.manifestFd.Zero() {
 				err = s.stor.Remove(s.manifestFd)
