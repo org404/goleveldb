@@ -137,8 +137,12 @@ func openDB(s *session) (*DB, error) {
 		if err := db.checkAndCleanFiles(); err != nil {
 			// Close journal.
 			if db.journal != nil {
-				db.journal.Close()
-				db.journalWriter.Close()
+				if err := db.journal.Close(); err != nil {
+					return err
+				}
+				if err := db.journalWriter.Close(); err != nil {
+					return err
+				}
 			}
 			return nil, err
 		}
@@ -640,8 +644,12 @@ func (db *DB) recoverJournal() error {
 	if err := db.s.commit(rec, false); err != nil {
 		// Close journal on error.
 		if db.journal != nil {
-			db.journal.Close()
-			db.journalWriter.Close()
+			if err := db.journal.Close(); err != nil {
+				return err
+			}
+			if err := db.journalWriter.Close(); err != nil {
+				return err
+			}
 		}
 		return err
 	}
@@ -1204,8 +1212,12 @@ func (db *DB) Close() error {
 
 	// Closes journal.
 	if db.journal != nil {
-		db.journal.Close()
-		db.journalWriter.Close()
+		if err := db.journal.Close(); err != nil {
+			return err
+		}
+		if err := db.journalWriter.Close(); err != nil {
+			return err
+		}
 		db.journal = nil
 		db.journalWriter = nil
 	}
