@@ -1,0 +1,63 @@
+[tool.poetry]
+name = "langgraph-api"
+version = "0.1.0"
+description = ""
+authors = ["Nuno Campos <nuno@langchain.dev>"]
+readme = "README.md"
+packages = [{include = "langgraph_api"}]
+
+[tool.poetry.scripts]
+langgraph-verify-graphs = "langgraph_api.shared.graph:verify_graphs"
+
+[tool.poetry.dependencies]
+python = "^3.9.0,<4.0"
+sse-starlette = "^2.1.0"
+langgraph = ">=0.2.7"
+langgraph-checkpoint-postgres = "^1.0.0"
+orjson = ">=3.10.1"
+langsmith = "^0.1.63"
+httpx = ">=0.27.0"
+langchain-core = ">=0.2.0"
+tenacity = "^8.3.0"
+psycopg = {extras = ["binary"], version = ">=3.1.19"}
+psycopg-pool = "^3.2.2"
+jsonschema-rs = "^0.18.0"
+croniter = ">=1.0.1"
+structlog = "^24.4.0"
+
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.1.4"
+codespell = "^2.2.0"
+pytest = "^7.4.4"
+anyio = "^4.4.0"
+pytest-watcher = "^0.4.2"
+langgraph-cli = "^0.1.38"
+langgraph-sdk = { git = "https://github.com/langchain-ai/langgraph", branch = "main", subdirectory="libs/sdk-py"}
+uvicorn = {extras = ["standard"], version = ">=0.29.0"}
+langgraph-storage-base = {path = "../storage_base", develop = true}
+langgraph-license-noop = {path = "../license_noop", develop = true}
+pytest-repeat = "^0.9.3"
+
+[tool.pytest.ini_options]
+# --strict-markers will raise errors on unknown marks.
+# https://docs.pytest.org/en/7.1.x/how-to/mark.html#raising-errors-on-unknown-marks
+#
+# https://docs.pytest.org/en/7.1.x/reference/reference.html
+# --strict-config       any warnings encountered while parsing the `pytest`
+#                       section of the configuration file raise errors.
+addopts = "--strict-markers --strict-config --durations=5 -vv"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+select = [ "E", "F", "UP", "B", "I" ]
+ignore = [ "E501", "B008" ]
+
+[tool.pytest-watcher]
+now = true
+delay = 3
+runner_args = ["-x", "-vv"]
+patterns = ["*.py"]
