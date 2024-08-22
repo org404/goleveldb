@@ -137,8 +137,12 @@ func openDB(s *session) (*DB, error) {
 		if err := db.checkAndCleanFiles(); err != nil {
 			// Close journal.
 			if db.journal != nil {
-				db.journal.Close()
-				db.journalWriter.Close()
+				if err := db.journal.Close(); err != nil {
+					return nil, err
+				}
+				if err := db.journalWriter.Close(); err != nil {
+					return nil, err
+				}
 			}
 			return nil, err
 		}
@@ -365,7 +369,9 @@ func recoverTable(s *session, o *opt.Options) error {
 		var closed bool
 		defer func() {
 			if !closed {
-				reader.Close()
+				if err := reader.Close(); err != nil {
+					return err
+				}
 			}
 		}()
 
