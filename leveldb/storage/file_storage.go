@@ -97,7 +97,7 @@ func OpenFile(path string, readOnly bool) (Storage, error) {
 			return nil, fmt.Errorf("leveldb/storage: open %s: not a directory", path)
 		}
 	} else if os.IsNotExist(err) && !readOnly {
-		if err := os.MkdirAll(path, 0755); err != nil {
+		if err := os.MkdirAll(path, 0750); err != nil {
 			return nil, err
 		}
 	} else {
